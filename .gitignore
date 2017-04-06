@@ -1,0 +1,23 @@
+# IntelliJ/PyCharm Files
+.idea/
+*.ipr
+*.iws
+*.iml
+
+# Eclipse Files
+.classpath
+.project
+
+# Build outputs
+*.pyc
+
+# Vagrant outputs
+.vagrant
+
+# OS hidden files
+.DS_Store
+
+# Visual Studio Code
+.vscode/
+
+spotify_access_token.txt
