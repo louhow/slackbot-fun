@@ -5,6 +5,11 @@ from spotipy.client import SpotifyException
 
 class Spotify_Api(object):
     def __init__(self):
+        self.username = "louhow"
+        self.file = "spotify_access_token.txt"
+        self.tokenPath = "https://accounts.spotify.com/api/token"
+
+        self.playlist_id = "x" # The Thread
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic x'
@@ -13,11 +18,6 @@ class Spotify_Api(object):
             'grant_type':'refresh_token',
             'refresh_token':'x'
         }
-
-        self.tokenPath = "https://accounts.spotify.com/api/token"
-        self.playlist_id = "x" # The Thread
-        self.username = "louhow"
-        self.file = "spotify_access_token.txt"
 
     def add_track(self, track):
         try:
