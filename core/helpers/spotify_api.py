@@ -1,22 +1,24 @@
+import base64
 import json
 import requests
 import spotipy
 from spotipy.client import SpotifyException
 
 class Spotify_Api(object):
-    def __init__(self):
+    def __init__(self, client_id, client_secret, refresh_token, default_playlist_id):
         self.username = "louhow"
         self.file = "spotify_access_token.txt"
         self.tokenPath = "https://accounts.spotify.com/api/token"
 
-        self.playlist_id = "x" # The Thread
+        self.playlist_id = default_playlist_id # The Thread
+        auth_header = base64.b64encode(str(client_id + ':' + client_secret).encode())
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic x'
+            'Authorization': 'Basic ' + auth_header.decode()
         }
         self.data = {
-            'grant_type':'refresh_token',
-            'refresh_token':'x'
+            'grant_type': 'refresh_token',
+            'refresh_token': refresh_token
         }
 
     def add_track(self, track):

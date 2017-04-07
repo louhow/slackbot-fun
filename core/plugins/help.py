@@ -1,4 +1,5 @@
 from slackbot.bot import respond_to
+from core.helpers.common import help_text
 
 @respond_to('help')
 def help(message):
