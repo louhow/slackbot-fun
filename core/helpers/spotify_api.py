@@ -24,12 +24,12 @@ class Spotify_Api(object):
     def add_track(self, track):
         try:
             self.__attempt_add_track(track)
-            return "Successfully added " + track
+            return "Successfully added track!"
         except SpotifyException as e:
             if e.http_status == 401:
                 self.__refresh_access_token()
                 self.__attempt_add_track(track)
-                return "Successfuly added " + track + " after refresh"
+                return "Successfully added track!!"
             else:
                 return "Failure fetching track '" + track + "': " + e.__str__()
 
