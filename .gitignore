@@ -21,3 +21,4 @@
 .vscode/
 
 spotify_access_token.txt
+slackbot_settings.py
