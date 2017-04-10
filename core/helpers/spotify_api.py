@@ -37,8 +37,7 @@ class Spotify_Api(object):
                 self.__refresh_access_token()
                 self.__attempt_add_track(track)
                 return "Successfully added track!!"
-            else:
-                return "Failure fetching track '" + track + "': " + e.__str__()
+            raise e
 
     def __attempt_add_track(self, track):
         sp = spotipy.Spotify(auth=self.__get_access_token())
@@ -84,18 +83,17 @@ class Spotify_Api(object):
                 self.__refresh_access_token()
                 current_tracks = self.__fetch_tracks()
             else:
-                return False
+                raise e
 
-        # TODO improve this
-        current_track_ids = list(map(lambda x: x['track']['id'], current_tracks))
-        return len(list(filter(lambda x: x == track_id, current_track_ids))) > 0
+        return len([track for track in current_tracks if track['track']['id'] == track_id]) > 0
 
     def __fetch_tracks(self):
         sp = spotipy.Spotify(auth=self.__get_access_token())
         response = sp.user_playlist(
                 self.user_name,
                 self.playlist_id,
-                fields='tracks.items(track(name,id,album(name,href),artists(id,name)))')
+                # fields='tracks.items(track(name,id,album(name,href),artists(id,name)))')
+                fields='tracks.items(track(id))')
 
         return response['tracks']['items']
 
