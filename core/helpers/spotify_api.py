@@ -10,8 +10,24 @@ class Spotify_Api(object):
         self.user_name = user_name
         self.file = "spotify_access_token.txt"
         self.token_path = "https://accounts.spotify.com/api/token"
-        self.nerd_words = ['goob', 'fool', 'dunce', 'noob', 'busta', 'goof', 'dummy', 'silly', 'goober',
-                           'nerd', 'dweeb', 'goofball', 'simpleton']
+        self.failure_messages = [
+            "Boo this man!",
+            "Shame bell this reposter!",
+            "Don't worry, I won't tell anybody you re-posted",
+            "It seems like somebody has added this track already",
+            "Nobody likes a copycat",
+            "Get your own style man, this track has already been added.",
+            "It's not a big deal that you just REPOSTED."
+        ]
+        self.success_messages = [
+            "Track added!",
+            "Acknowledged.",
+            "Roger that.",
+            "10-4, Ghost Rider.",
+            "I gotchu mayne",
+            "Put it in the books!",
+            "Awww yeah, track added."
+        ]
 
         self.playlist_id = default_playlist_id # The Thread
         auth_header = base64.b64encode(str(client_id + ':' + client_secret).encode())
@@ -25,19 +41,12 @@ class Spotify_Api(object):
         }
 
     def add_track(self, track):
-        if self.__track_exists(track):
+        # TODO Use fancy schmancy decorators...or somethin'
+        if self.make_spotify_call(self.__track_exists, track):
             return 'Nice try, ' + self.__get_nerd_word() + '. That track was already added.'
 
-        # TODO Abstract away shared retry logic
-        try:
-            self.__attempt_add_track(track)
-            return "Successfully added track!"
-        except SpotifyException as e:
-            if e.http_status == 401:
-                self.__refresh_access_token()
-                self.__attempt_add_track(track)
-                return "Successfully added track!!"
-            raise e
+        self.make_spotify_call(self.__attempt_add_track, track)
+        return random.choice(self.success_messages)
 
     def __attempt_add_track(self, track):
         sp = spotipy.Spotify(auth=self.__get_access_token())
@@ -75,15 +84,7 @@ class Spotify_Api(object):
         return random.choice(self.nerd_words)
 
     def __track_exists(self, track_id):
-        # TODO Abstract away shared retry logic
-        try:
-            current_tracks = self.__fetch_tracks()
-        except SpotifyException as e:
-            if e.http_status == 401:
-                self.__refresh_access_token()
-                current_tracks = self.__fetch_tracks()
-            else:
-                raise e
+        current_tracks = self.__fetch_tracks()
 
         return len([track for track in current_tracks if track['track']['id'] == track_id]) > 0
 
@@ -96,5 +97,15 @@ class Spotify_Api(object):
                 fields='tracks.items(track(id))')
 
         return response['tracks']['items']
+
+    def make_spotify_call(self, f, *args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except SpotifyException as e:
+            if e.http_status != 401:
+                raise
+
+            self.__refresh_access_token()
+            return f(*args, **kwargs)
 
 
