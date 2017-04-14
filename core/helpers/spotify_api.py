@@ -11,7 +11,7 @@ class Spotify_Api(object):
         self.file = "spotify_access_token.txt"
         self.token_path = "https://accounts.spotify.com/api/token"
         self.failure_messages = [
-            "Boo this man!",
+            "This track is old news. Boo this man!",
             "Shame bell this reposter!",
             "Don't worry, I won't tell anybody you re-posted",
             "It seems like somebody has added this track already",
@@ -43,7 +43,7 @@ class Spotify_Api(object):
     def add_track(self, track):
         # TODO Use fancy schmancy decorators...or somethin'
         if self.make_spotify_call(self.__track_exists, track):
-            return 'Nice try, ' + self.__get_nerd_word() + '. That track was already added.'
+            return random.choice(self.failure_messages)
 
         self.make_spotify_call(self.__attempt_add_track, track)
         return random.choice(self.success_messages)
