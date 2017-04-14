@@ -5,6 +5,7 @@ import requests
 import spotipy
 from spotipy.client import SpotifyException
 
+
 class Spotify_Api(object):
     def __init__(self, client_id, client_secret, user_name, user_refresh_token, default_playlist_id):
         self.user_name = user_name
@@ -29,7 +30,7 @@ class Spotify_Api(object):
             "Awww yeah, track added."
         ]
 
-        self.playlist_id = default_playlist_id # The Thread
+        self.playlist_id = default_playlist_id
         auth_header = base64.b64encode(str(client_id + ':' + client_secret).encode())
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -79,9 +80,6 @@ class Spotify_Api(object):
         f = open(self.file, 'w')
         f.write(new_access_token)
         f.close()
-
-    def __get_nerd_word(self):
-        return random.choice(self.nerd_words)
 
     def __track_exists(self, track_id):
         current_tracks = self.__fetch_tracks()
