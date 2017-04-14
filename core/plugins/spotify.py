@@ -14,8 +14,10 @@ def respond_add_track(message, track_id):
 
 
 def __add_track(message, track_id):
-    try:
-        message.reply_webapi(spotify_api.add_track(track_id))
-    except SpotifyException as e:
-        message.reply_webapi(e.msg)
-
+    if "skip" in message._body['text']:
+        message.reply_webapi("No worries, I won't add this one.")
+    else:
+        try:
+            message.reply_webapi(spotify_api.add_track(track_id))
+        except SpotifyException as e:
+            message.reply_webapi(e.msg)
