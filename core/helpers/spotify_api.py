@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 import random
 import requests
 import spotipy
@@ -9,7 +10,7 @@ from spotipy.client import SpotifyException
 class Spotify_Api(object):
     def __init__(self, client_id, client_secret, user_name, user_refresh_token, default_playlist_id):
         self.user_name = user_name
-        self.file = "spotify_access_token.txt"
+        self.file = os.path.dirname(__file__) + "/spotify_access_token.txt"
         self.token_path = "https://accounts.spotify.com/api/token"
         self.failure_messages = [
             "This track is old news. Boo this man!",
