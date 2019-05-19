@@ -25,3 +25,6 @@ core/helpers/spotify_access_token.txt
 
 # Keeps us from pushing our secrets to Github
 slackbot_settings.py
+
+# Schema migrations
+yoyo.ini
