@@ -8,3 +8,7 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=pass"
       - "MYSQL_DATABASE=mariadb"
+    volumes:
+      - db-data-volume:/var/lib/mysql
+volumes:
+  db-data-volume:

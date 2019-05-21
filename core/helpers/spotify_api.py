@@ -1,7 +1,6 @@
 import base64
 import json
 import os
-import random
 import requests
 import spotipy
 from spotipy.client import SpotifyException
@@ -12,24 +11,6 @@ class Spotify_Api(object):
         self.user_name = user_name
         self.file = os.path.dirname(__file__) + "/spotify_access_token.txt"
         self.token_path = "https://accounts.spotify.com/api/token"
-        self.failure_messages = [
-            "This track is old news. Boo this man!",
-            "Shame bell this reposter!",
-            "Don't worry, I won't tell anybody you re-posted",
-            "It seems like somebody has added this track already",
-            "Nobody likes a copycat",
-            "Get your own style man, this track has already been added.",
-            "It's not a big deal that you just REPOSTED."
-        ]
-        self.success_messages = [
-            "Track added!",
-            "Acknowledged.",
-            "Roger that.",
-            "10-4, Ghost Rider.",
-            "I gotchu mayne",
-            "Put it in the books!",
-            "Awww yeah, track added."
-        ]
 
         self.playlist_id = default_playlist_id
         auth_header = base64.b64encode(str(client_id + ':' + client_secret).encode())
@@ -43,12 +24,7 @@ class Spotify_Api(object):
         }
 
     def add_track(self, track):
-        # TODO Use fancy schmancy decorators...or somethin'
-        if self.make_spotify_call(self.__track_exists, track):
-            return random.choice(self.failure_messages)
-
         self.make_spotify_call(self.__attempt_add_track, track)
-        return random.choice(self.success_messages)
 
     def __attempt_add_track(self, track):
         sp = spotipy.Spotify(auth=self.__get_access_token())
@@ -87,15 +63,30 @@ class Spotify_Api(object):
 
         return len([track for track in current_tracks if track['track']['id'] == track_id]) > 0
 
-    def __fetch_tracks(self):
-        sp = spotipy.Spotify(auth=self.__get_access_token())
-        response = sp.user_playlist(
-                self.user_name,
-                self.playlist_id,
-                # fields='tracks.items(track(name,id,album(name,href),artists(id,name)))')
-                fields='tracks.items(track(id))')
+    def fetch_track_ids(self):
+        return self.make_spotify_call(self.__attempt_fetch_tracks)
 
-        return response['tracks']['items']
+    def __attempt_fetch_tracks(self):
+        tracks = []
+        offset = 0
+        while True:
+            sp = spotipy.Spotify(auth=self.__get_access_token())
+            response = sp.user_playlist_tracks(
+                user=self.user_name,
+                playlist_id=self.playlist_id,
+                # fields='tracks.items(track(name,id,album(name,href),artists(id,name)))')
+                fields='items(track(id))',
+                limit=100,
+                offset=offset
+            )
+
+            offset += 100
+            new_track_ids = list(map(lambda item: item['track']['id'], response['items']))
+            tracks = tracks + new_track_ids
+            if len(new_track_ids) < 100:
+                return tracks
+
+
 
     def make_spotify_call(self, f, *args, **kwargs):
         try:
