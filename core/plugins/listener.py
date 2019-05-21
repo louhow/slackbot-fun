@@ -2,7 +2,7 @@ from common import spotify_api, dao
 from slackbot.bot import listen_to
 from slackbot.bot import respond_to
 from spotipy.client import SpotifyException
-from core.helpers import slack_client
+from common import get_user_id, get_display_name_for_user_id
 import re
 import random
 
@@ -46,12 +46,12 @@ def __add_track(message, path):
 
             if spotify_track is None:
                 spotify_api.add_track(track_id)
-                dao.insert_spotify_track(track_id, slack_client.get_user_id(message))
+                dao.insert_spotify_track(track_id, get_user_id(message))
                 message.reply_webapi(random.choice(success_messages))
             else:
                 fail_msg = random.choice(failure_messages) + " This was added at or before " + str(spotify_track.create_time.date()) + "."
                 if spotify_track.create_slack_user_id is not None:
-                    display_name = slack_client.get_display_name_for_user_id(spotify_track.create_slack_user_id)
+                    display_name = get_display_name_for_user_id(spotify_track.create_slack_user_id)
                     fail_msg += " Credit to @" + display_name
                 message.reply_webapi(fail_msg)
         except SpotifyException as e:
