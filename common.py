@@ -15,5 +15,5 @@ bot = Bot()
 bot_slack_client = bot._client
 dao = Dao()
 
-# track_ids = spotify_api.fetch_track_ids()
-# dao.insert_spotify_tracks(track_ids)
+track_ids = spotify_api.fetch_track_ids()
+dao.insert_spotify_tracks(track_ids)
