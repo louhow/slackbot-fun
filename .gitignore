@@ -28,3 +28,6 @@ slackbot_settings.py
 
 # Schema migrations
 yoyo.ini
+
+# Logging file
+nohup.out
