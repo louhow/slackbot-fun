@@ -35,5 +35,5 @@ yoyo apply --database 'mysql://root:pass@localhost:14306/mariadb' ./migrations
 Running after setup
 ```bash
 workon slackbot-fun
-nohup ~/.virtualenvs/slackbot-fun/bin/python ~/slackbot-fun/run.py &
+nohup ~/.virtualenvs/slackbot-fun/bin/python run.py &
 ```

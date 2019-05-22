@@ -49,10 +49,13 @@ def __add_track(message, path):
                 dao.insert_spotify_track(track_id, get_user_id(message))
                 message.reply_webapi(random.choice(success_messages))
             else:
-                fail_msg = random.choice(failure_messages) + " This was added at or before " + str(spotify_track.create_time.date()) + "."
+                fail_msg = random.choice(failure_messages)
+                create_time = str(spotify_track.create_time.date())
                 if spotify_track.create_slack_user_id is not None:
                     display_name = get_display_name_for_user_id(spotify_track.create_slack_user_id)
-                    fail_msg += " Credit to @" + display_name
+                    fail_msg += " This was added on " + create_time + ". Credit to @" + display_name
+                else:
+                    fail_msg += " This was added before " + create_time + "."
                 message.reply_webapi(fail_msg)
         except SpotifyException as e:
             message.reply_webapi(e.msg)
