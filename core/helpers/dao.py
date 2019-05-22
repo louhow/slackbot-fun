@@ -9,7 +9,9 @@ Base = declarative_base()
 
 class Dao(object):
   def __init__(self):
-    engine = create_engine('mysql+pymysql://root:pass@localhost:14306/mariadb', pool_recycle=1)
+    engine = create_engine('mysql+pymysql://root:pass@localhost:14306/mariadb',
+                           pool_recycle=60,
+                           pool_pre_ping=True)
     self.Session = sessionmaker()
     self.Session.configure(bind=engine)
 

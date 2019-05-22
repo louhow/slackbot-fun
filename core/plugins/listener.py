@@ -58,7 +58,8 @@ def __add_track(message, path):
                     fail_msg += " This was added before " + create_time + "."
                 message.reply_webapi(fail_msg)
         except SpotifyException as e:
-            message.reply_webapi(e.msg)
+            print(e.msg)
+            message.reply_webapi("Sorry ya'll...something happened. @lou")
 
 # Hacky, but slackbot is refusing to group match on '\w+' - so we'll just parse this out ourselves
 # Must match on the following cases:
