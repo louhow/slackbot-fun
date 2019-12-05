@@ -7,22 +7,16 @@ import re
 import random
 
 failure_messages = [
-    "This track is old news. Boo this man!",
-    "Shame bell this reposter!",
-    "Don't worry, I won't tell anybody you re-posted.",
-    "It seems like somebody has added this track already.",
-    "Nobody likes a copycat.",
-    "Get your own style man, this track has already been added.",
-    "It's not a big deal that you just REPOSTED."
+    "Looks like someone has good taste.",
+    "This track has already been added."
 ]
 success_messages = [
     "Track added!",
-    "Acknowledged.",
+    "Copy that.",
     "Roger that.",
     "10-4, Ghost Rider.",
     "I gotchu mayne",
-    "Put it in the books!",
-    "Awww yeah, track added."
+    "Put it in the books!"
 ]
 
 
@@ -55,11 +49,11 @@ def __add_track(message, path):
                     display_name = get_display_name_for_user_id(spotify_track.create_slack_user_id)
                     fail_msg += " This was added on " + create_time + ". Credit to @" + display_name
                 else:
-                    fail_msg += " This was added before " + create_time + "."
+                    fail_msg += " This was added sometime before " + create_time + "."
                 message.reply_webapi(fail_msg)
         except SpotifyException as e:
             print(e.msg)
-            message.reply_webapi("Sorry ya'll...something happened. @lou")
+            message.reply_webapi("Sorry ya'll...something happened.")
 
 # Hacky, but slackbot is refusing to group match on '\w+' - so we'll just parse this out ourselves
 # Must match on the following cases:
