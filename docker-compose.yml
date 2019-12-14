@@ -10,5 +10,13 @@ services:
       - "MYSQL_DATABASE=mariadb"
     volumes:
       - db-data-volume:/var/lib/mysql
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.10'
+#          memory: 100M
+#        reservations:
+#          cpus: '0.01'
+#          memory: 20M
 volumes:
   db-data-volume:

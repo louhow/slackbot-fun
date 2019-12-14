@@ -27,7 +27,7 @@ touch core/helpers/spotify_access_token.txt
 mkvirtualenv slackbot-fun
 workon slackbot-fun
 pip install -r requirements.txt
-docker-compose up
+docker-compose up # TODO docker stack deploy --compose-file=docker-compose.yml slackbot
 yoyo apply --database 'mysql://root:pass@localhost:14306/mariadb' ./migrations
 
 ```

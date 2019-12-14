@@ -4,8 +4,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from slackbot_settings import SPOTIFY_DEFAULT_PLAYLIST_ID
+from sqlalchemy.ext.serializer import loads, dumps
+from sqlalchemy.util import KeyedTuple
 
 Base = declarative_base()
+
 
 class Dao(object):
   def __init__(self):
@@ -14,6 +17,28 @@ class Dao(object):
                            pool_pre_ping=True)
     self.Session = sessionmaker()
     self.Session.configure(bind=engine)
+
+
+  def query_all(self, file_name):
+    f = open('backup.txt', 'wb')
+    session = self.Session()
+    q = session.query(SpotifyTrack)
+    f.write(dumps(q.all()))
+    f.close()
+    session.close()
+
+
+  def load(self, file_name):
+    with open(file_name, 'rb') as file_handler:
+      session = self.Session()
+      for row in loads(file_handler.read()):
+        if isinstance(row, KeyedTuple):
+          row = SpotifyTrack(**row._asdict())
+        session.merge(row)
+
+      session.commit()
+      session.close()
+
 
   def get_spotify_track(self, external_track_id):
     """
@@ -57,3 +82,6 @@ class SpotifyTrack(Base):
   external_track_id = Column(String(20))
   create_slack_user_id = Column(String(20))
   create_time = Column(TIMESTAMP)
+
+  def __str__(self):
+    return '%(spotify_track_id)s' % locals()

@@ -4,6 +4,8 @@ import logging
 import logging.config
 from slackbot import settings
 from common import bot
+import resource
+
 
 def main():
   kw = {
