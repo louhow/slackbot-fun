@@ -33,4 +33,4 @@ yoyo.ini
 nohup.out
 
 # DB backup file
-backup.txt
+backup*.txt
