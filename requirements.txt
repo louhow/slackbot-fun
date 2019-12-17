@@ -1,6 +1,6 @@
-slackbot == 0.4.1
-slacker == 0.9.42
-spotipy == 2.4.4
-yoyo-migrations == 6.1.0
+slackbot
+slacker
+spotipy
+yoyo-migrations
 PyMySQL
 sqlalchemy
