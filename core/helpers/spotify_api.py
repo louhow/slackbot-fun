@@ -69,14 +69,15 @@ class Spotify_Api(object):
     def __attempt_fetch_tracks(self):
         tracks = []
         offset = 0
+        sp = spotipy.Spotify(auth=self.__get_access_token())
         while True:
-            sp = spotipy.Spotify(auth=self.__get_access_token())
+            print('Fetching playlist %s from offset %s' % (self.playlist_id, offset))
             response = sp.user_playlist_tracks(
                 user=self.user_name,
                 playlist_id=self.playlist_id,
                 # fields='tracks.items(track(name,id,album(name,href),artists(id,name)))')
                 fields='items(track(id))',
-                limit=100,
+                limit=100, # Max is 100 - https://developer.spotify.com/documentation/web-api/reference/playlists/get-playlists-tracks/
                 offset=offset
             )
 
@@ -84,6 +85,7 @@ class Spotify_Api(object):
             new_track_ids = list(map(lambda item: item['track']['id'], response['items']))
             tracks = tracks + new_track_ids
             if len(new_track_ids) < 100:
+                print('Found %d tracks' % (len(tracks)))
                 return tracks
 
 
