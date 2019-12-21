@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   db:
-    image: mariadb:10.3.15
+    image: mariadb:latest
     ports:
       - "14306:3306"
     environment:
