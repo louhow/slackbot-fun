@@ -12,7 +12,7 @@ Base = declarative_base()
 
 class Dao(object):
   def __init__(self):
-    engine = create_engine('mysql+pymysql://user:pass@localhost:14306/mariadb',
+    engine = create_engine('mysql+pymysql://user:pass@localhost:14306/slackbot-db',
                            pool_recycle=1,
                            pool_pre_ping=True)
     self.Session = sessionmaker()
