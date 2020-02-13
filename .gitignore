@@ -34,3 +34,5 @@ nohup.out
 
 # DB backup file
 backup*.txt
+
+yes/

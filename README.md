@@ -28,7 +28,7 @@ mkvirtualenv slackbot-fun
 workon slackbot-fun
 pip install -r requirements.txt
 docker stack deploy --compose-file=docker-compose.yml slackbot
-yoyo apply --database 'mysql://root:pass@localhost:14306/slackbot-db' ./migrations
+yoyo apply --database 'mysql://user:pass@127.0.0.1:14306/slackbot-db' ./migrations
 ```
 
 Running after setup
