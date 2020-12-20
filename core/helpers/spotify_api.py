@@ -30,7 +30,7 @@ class Spotify_Api(object):
 
     def __attempt_add_track(self, track):
         sp = spotipy.Spotify(auth=self.__get_access_token())
-        sp.playlist_add_items(self.playlist_id, [track])
+        sp.user_playlist_add_tracks(self.user_name, self.playlist_id, [track])
 
     def __refresh_access_token(self):
         print("Refreshing access token")
