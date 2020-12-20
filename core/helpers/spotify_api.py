@@ -23,12 +23,14 @@ class Spotify_Api(object):
             'refresh_token': user_refresh_token
         }
 
+        self.__refresh_access_token()
+
     def add_track(self, track):
         self.make_spotify_call(self.__attempt_add_track, track)
 
     def __attempt_add_track(self, track):
         sp = spotipy.Spotify(auth=self.__get_access_token())
-        sp.user_playlist_add_tracks(self.user_name, self.playlist_id, [track])
+        sp.playlist_add_items(self.playlist_id, [track])
 
     def __refresh_access_token(self):
         print("Refreshing access token")
@@ -54,14 +56,9 @@ class Spotify_Api(object):
         return data['access_token']
 
     def __save_access_token(self, new_access_token):
-        f = open(self.file, 'w')
+        f = open(self.file, 'w+')
         f.write(new_access_token)
         f.close()
-
-    def __track_exists(self, track_id):
-        current_tracks = self.__fetch_tracks()
-
-        return len([track for track in current_tracks if track['track']['id'] == track_id]) > 0
 
     def fetch_track_ids(self):
         return self.make_spotify_call(self.__attempt_fetch_tracks)
@@ -87,8 +84,6 @@ class Spotify_Api(object):
             if len(new_track_ids) < 100:
                 print('Found %d tracks' % (len(tracks)))
                 return tracks
-
-
 
     def make_spotify_call(self, f, *args, **kwargs):
         try:

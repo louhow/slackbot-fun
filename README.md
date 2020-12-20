@@ -23,7 +23,6 @@ logout # and log back in
 First Time Setup
 ```bash
 cp slackbot_settings.py.default slackbot_settings.py # and update
-touch core/helpers/spotify_access_token.txt
 mkvirtualenv slackbot-fun
 workon slackbot-fun
 pip install -r requirements.txt

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.exc import IntegrityError
 from slackbot_settings import SPOTIFY_DEFAULT_PLAYLIST_ID
 from sqlalchemy.ext.serializer import loads, dumps
@@ -13,31 +13,35 @@ Base = declarative_base()
 class Dao(object):
   def __init__(self):
     engine = create_engine('mysql+pymysql://user:pass@127.0.0.1:14306/slackbot-db',
-                           pool_recycle=1,
+                           pool_recycle=280,
                            pool_pre_ping=True)
-    self.Session = sessionmaker()
-    self.Session.configure(bind=engine)
+    session_factory = sessionmaker(bind=engine)
+    self.Session = scoped_session(session_factory)
 
 
   def query_all(self, file_name):
     f = open('backup.txt', 'wb')
     session = self.Session()
-    q = session.query(SpotifyTrack)
-    f.write(dumps(q.all()))
-    f.close()
-    session.close()
+    try:
+      q = session.query(SpotifyTrack)
+      f.write(dumps(q.all()))
+      f.close()
+    finally:
+      session.close()
 
 
   def load(self, file_name):
     with open(file_name, 'rb') as file_handler:
       session = self.Session()
-      for row in loads(file_handler.read()):
-        if isinstance(row, KeyedTuple):
-          row = SpotifyTrack(**row._asdict())
-        session.merge(row)
+      try:
+        for row in loads(file_handler.read()):
+          if isinstance(row, KeyedTuple):
+            row = SpotifyTrack(**row._asdict())
+          session.merge(row)
 
-      session.commit()
-      session.close()
+        session.commit()
+      finally:
+        session.close()
 
 
   def get_spotify_track(self, external_track_id):
@@ -46,10 +50,13 @@ class Dao(object):
     :return: SpotifyTrack
     """
     session = self.Session()
-    result = session.query(SpotifyTrack) \
-      .filter_by(external_track_id=external_track_id, external_playlist_id=SPOTIFY_DEFAULT_PLAYLIST_ID) \
-      .first()
-    session.close()
+    try:
+      result = session.query(SpotifyTrack) \
+        .filter_by(external_track_id=external_track_id, external_playlist_id=SPOTIFY_DEFAULT_PLAYLIST_ID) \
+        .first()
+    finally:
+      session.close()
+
     return result
 
 
@@ -58,8 +65,8 @@ class Dao(object):
       if self.get_spotify_track(track_id) is None:
         self.insert_spotify_track(track_id)
 
-
   def insert_spotify_track(self, track_id, user_id=None):
+    success = False
     s = self.Session()
     try:
       s.add(SpotifyTrack(
@@ -68,10 +75,16 @@ class Dao(object):
         create_slack_user_id=user_id
       ))
       s.commit()
+      success = True
     except IntegrityError:
       print('Unable to add duplicate track ' + track_id)
+      success = True
+    except Exception as e:
+      print(e)
     finally:
       s.close()
+
+    return success
 
 
 

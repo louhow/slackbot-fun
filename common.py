@@ -19,9 +19,5 @@ track_ids = spotify_api.fetch_track_ids()
 dao.insert_spotify_tracks(track_ids)
 
 
-def get_display_name_for_user_id(id):
-    return bot_slack_client.users[id]['name']
-
-
 def get_user_id(message):
     return message._body['user']
