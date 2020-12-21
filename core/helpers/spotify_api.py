@@ -21,7 +21,7 @@ class SpotifyApi(object):
         tracks = []
         offset = 0
         while True:
-            print('Fetching playlist %s from offset %s' % (self.playlist_id, offset))
+            print(f'Fetching playlist {self.playlist_id} from offset {offset}')
             response = self.spotify.user_playlist_tracks(
                 user=self.user_name,
                 playlist_id=self.playlist_id,
@@ -35,7 +35,7 @@ class SpotifyApi(object):
             new_track_ids = list(map(lambda item: item['track']['id'], response['items']))
             tracks = tracks + new_track_ids
             if len(new_track_ids) < 100:
-                print('Found %d tracks' % (len(tracks)))
+                print(f'Found {len(tracks)} tracks')
                 return tracks
 
 

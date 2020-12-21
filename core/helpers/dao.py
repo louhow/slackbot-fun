@@ -77,7 +77,7 @@ class Dao(object):
       s.commit()
       success = True
     except IntegrityError:
-      print('Unable to add duplicate track ' + track_id)
+      print(f'Unable to add duplicate track {track_id}')
       success = True
     except Exception as e:
       print(e)

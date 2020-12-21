@@ -47,12 +47,11 @@ def __add_track(message, path):
                 else:
                     message.reply_webapi("Saving to DB broke (cc lou). Please send again and it should save.")
             else:
-                fail_msg = random.choice(failure_messages)
                 create_date = str(spotify_track.create_time.date())
                 if spotify_track.create_slack_user_id is not None:
-                    fail_msg += " This was added on " + create_date + ". Credit to <@" + spotify_track.create_slack_user_id + ">"
+                    fail_msg = f"{random.choice(failure_messages)} This was added on {create_date}, credit to <@{spotify_track.create_slack_user_id}>."
                 else:
-                    fail_msg += " This was added sometime before " + create_date + "."
+                    fail_msg = f"{random.choice(failure_messages)} This was added sometime before {create_date}."
                 message.reply_webapi(fail_msg)
         except SpotifyException as e:
             print(e.msg)
