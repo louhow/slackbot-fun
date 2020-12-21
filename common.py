@@ -1,11 +1,11 @@
 from core.helpers.help import HelpText
-from core.helpers.spotify_api import Spotify_Api
+from core.helpers.spotify_api import SpotifyApi
 from slackbot_settings import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_USER_NAME, SPOTIFY_REFRESH_TOKEN, SPOTIFY_DEFAULT_PLAYLIST_ID
 from slackbot.bot import Bot
 from core.helpers.dao import Dao
 
 
-spotify_api = Spotify_Api(
+spotify_api = SpotifyApi(
     SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET,
     SPOTIFY_USER_NAME, SPOTIFY_REFRESH_TOKEN,
     SPOTIFY_DEFAULT_PLAYLIST_ID)
