@@ -11,8 +11,8 @@ class SpotifyApi(object):
                  default_playlist_id):
         self.user_name = user_name
         self.playlist_id = default_playlist_id
-        self.spotify = spotipy.Spotify(
-            auth_manager=SpotifyAuthManager(client_id, client_secret, user_refresh_token))
+        auth_manager = SpotifyAuthManager(client_id, client_secret, user_refresh_token)
+        self.spotify = spotipy.Spotify(auth_manager=auth_manager)
 
     def add_track(self, track):
         self.spotify.user_playlist_add_tracks(self.user_name, self.playlist_id, [track])
@@ -41,7 +41,6 @@ class SpotifyApi(object):
 
 class SpotifyAuthManager:
     def __init__(self, client_id, client_secret, user_refresh_token):
-        self.file = os.path.dirname(__file__) + "/spotify_access_token.txt"
         auth_header = base64.b64encode(str(client_id + ':' + client_secret).encode())
         self.headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -52,12 +51,17 @@ class SpotifyAuthManager:
             'refresh_token': user_refresh_token
         }
 
-    def get_access_token(self):
+    def get_access_token(self, as_dict=False):
+        try:
+            return self._fetch_token()
+        except Exception:
+            print('Fetching token failed once, trying again.')
+            return self._fetch_token()
+
+    def _fetch_token(self):
         response = requests.post(
             "https://accounts.spotify.com/api/token",
             headers=self.headers,
             data=self.data)
-
         data = json.loads(response.text)
-
         return data['access_token']

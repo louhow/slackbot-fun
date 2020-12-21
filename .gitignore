@@ -20,9 +20,6 @@
 # Visual Studio Code
 .vscode/
 
-# This app will use the disk to cache the access token
-core/helpers/spotify_access_token.txt
-
 # Keeps us from pushing our secrets to Github
 slackbot_settings.py
 
