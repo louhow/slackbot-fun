@@ -53,9 +53,9 @@ def __add_track(message, path):
                 else:
                     fail_msg = f"{random.choice(failure_messages)} This was added sometime before {create_date}."
                 message.reply_webapi(fail_msg)
-        except SpotifyException as e:
-            print(e.msg)
-            message.reply_webapi("Talking to Spotify failed (cc lou).")
+        except Exception as e:
+            print(e)
+            message.reply_webapi("Unknown error (cc lou).")
 
 
 # Hacky, but slackbot is refusing to group match on '\w+' - so we'll just parse this out ourselves
